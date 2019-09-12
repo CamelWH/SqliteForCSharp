@@ -1,0 +1,8 @@
+F:\Wanghao\_MyVSPro\SqliteForCSharp\SqliteForCSharp\bin\Debug\SqliteForCSharp.exe.config
+F:\Wanghao\_MyVSPro\SqliteForCSharp\SqliteForCSharp\obj\Debug\SqliteForCSharp.csprojResolveAssemblyReference.cache
+F:\Wanghao\_MyVSPro\SqliteForCSharp\SqliteForCSharp\bin\Debug\SqliteForCSharp.exe
+F:\Wanghao\_MyVSPro\SqliteForCSharp\SqliteForCSharp\bin\Debug\SqliteForCSharp.pdb
+F:\Wanghao\_MyVSPro\SqliteForCSharp\SqliteForCSharp\obj\Debug\SqliteForCSharp.exe
+F:\Wanghao\_MyVSPro\SqliteForCSharp\SqliteForCSharp\obj\Debug\SqliteForCSharp.pdb
+F:\Wanghao\_MyVSPro\SqliteForCSharp\SqliteForCSharp\bin\Debug\Mono.Data.Sqlite.dll
+F:\Wanghao\_MyVSPro\SqliteForCSharp\SqliteForCSharp\bin\Debug\sqlite3.dll

@@ -9,9 +9,6 @@ namespace SqliteForCSharp
     {
         static void Main(string[] args)
         {
-
-
-
             try
             {
                 string path = @"C:\Users\001\Desktop\skypath.db";
@@ -32,7 +29,6 @@ namespace SqliteForCSharp
                 //{
                 //    //Console.WriteLine(item[1]);
                 //}
-
                 Table talbe = new Table("test");
                 talbe.colName.Add("id");
                 talbe.colName.Add("name");

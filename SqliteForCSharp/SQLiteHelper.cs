@@ -1,8 +1,6 @@
 ﻿using Mono.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Text;
 
 namespace SqliteForCSharp
 {
@@ -71,18 +69,6 @@ namespace SqliteForCSharp
             }
             queryString += "  ) ";
             ExecuteQuery(queryString);
-        }
-        /// <summary>
-        /// 根据自制数据表向数据库添加一个表
-        /// </summary>
-        /// <param name="table"></param>
-        public static void CreateTable(Table table)
-        {
-            CreateTable(table.tableName, table.colName.ToArray());
-            foreach (var item in table.List)
-            {
-                AddData(table.tableName, item.ToArray());
-            }
         }
         /// <summary>
         /// 删除一个表
@@ -155,24 +141,36 @@ namespace SqliteForCSharp
         public static Table ReadTable(string tableName)
         {
             string queryString = "SELECT * FROM " + tableName;
-            ExecuteQuery(queryString);
-            Table table = new Table(tableName);
-            for (int i = 0; i <  dataReader.FieldCount; i++)
+            Table table = new Table();
+            table.Change(tableName);
+            int lineNum = 1;
+            using (command = new SqliteCommand(queryString,connect))
             {
-                table.colName.Add(dataReader.GetName(i));
-            }
-            List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
-            while (dataReader.Read())
-            {
-                Dictionary<string, string> temp = new Dictionary<string, string>();
-                for (int i = 0; i < dataReader.FieldCount; i++)
+                try
                 {
-                    temp.Add(dataReader.GetName(i), dataReader[dataReader.GetName(i)] as string);
-                    Console.WriteLine(temp[dataReader.GetName(i)]);
+                    dataReader = command.ExecuteReader();
+                    for (int i = 0; i < dataReader.FieldCount; i++)
+                    {
+                        table.colNames.Add(dataReader.GetName(i));
+                    }
+                    while (dataReader.Read())
+                    {
+                        for (int i = 0; i < dataReader.FieldCount; i++)
+                        {
+                            Element element = new Element();
+                            element.Change(lineNum, dataReader.GetName(i), dataReader[dataReader.GetName(i)]);
+                            Console.WriteLine(element);
+                            table.AddElement(element);
+                        }
+                        lineNum++;
+                    }
                 }
-                list.Add(temp);
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
-            table.content = list;
+            Console.WriteLine(table);
             return table;
         }
         /// <summary>
@@ -197,31 +195,73 @@ namespace SqliteForCSharp
         /// <summary>
         /// 列名
         /// </summary>
-        public List<string> colName;
-        public int count{get{return content.Count;}}//数据条数
-        public List<Dictionary<string, string>> content;//数据库的内容
-        private List<List<string>> list = new List<List<string>>();
-        public List<List<string>> List
+        public List<string> colNames;
+        /// <summary>
+        /// 该表的所有元素
+        /// </summary>
+        public Dictionary<int, List<Element>> content;
+        /// <summary>
+        /// 添加元素
+        /// </summary>
+        /// <param name="lineNum"></param>
+        /// <param name="e"></param>
+        public void AddElement(Element e)
         {
-            get
+            if (!content.ContainsKey(e.lineNum))
             {
-                foreach (var item in content)
-                {
-                    List<string> temp = new List<string>();
-                    foreach (var v in item)
-                    {
-                        temp.Add(v.Value);
-                    }
-                    list.Add(temp);
-                }
-                return list;
+                content.Add(e.lineNum, new List<Element>());
             }
+            content[e.lineNum].Add(e);
         }
-        public Table(string tableName)
+        public Table()
+        {
+        }
+        public void Change(string tableName)
         {
             this.tableName = tableName;
-            this.colName = new List<string>();
-            this.content = new List<Dictionary<string, string>>();
+            this.colNames = new List<string>();
+            this.content = new Dictionary<int, List<Element>>();
+        }
+        public override string ToString()
+        {
+            string str = "表名:" + tableName + "\n" + "列名:" + string.Join(",", this.colNames);
+            foreach (var item in content)
+            {
+                str += "\n" + string.Join("----", item.Value);
+            }
+            return str;
+        }
+    }
+
+    /// <summary>
+    /// 表中一个元素
+    /// </summary>
+    public class Element
+    {
+        /// <summary>
+        /// 该元素的的内容
+        /// </summary>
+        public object content;
+        /// <summary>
+        /// 该元素的行号
+        /// </summary>
+        public int lineNum;
+        /// <summary>
+        /// 该元素的列名
+        /// </summary>
+        public string colName;
+        public Element()
+        {
+        }
+        public void Change(int lineNum, string colName, object content)
+        {
+            this.lineNum = lineNum;
+            this.colName = colName;
+            this.content = content;
+        }
+        public override string ToString()
+        {
+            return string.Format("行号:{0};列名:{1};内容:{2};类型:{3}", lineNum, colName, content, content.GetType());
         }
     }
 }

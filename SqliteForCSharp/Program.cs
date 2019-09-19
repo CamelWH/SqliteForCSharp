@@ -29,23 +29,6 @@ namespace SqliteForCSharp
                 //{
                 //    //Console.WriteLine(item[1]);
                 //}
-                Table talbe = new Table("test");
-                talbe.colName.Add("id");
-                talbe.colName.Add("name");
-                talbe.colName.Add("des");
-                Dictionary<string, string> dic = new Dictionary<string, string>();
-                dic.Add("id", "1");
-                dic.Add("name", "1");
-                dic.Add("des", "1");
-                talbe.content.Add(dic);
-                dic = new Dictionary<string, string>();
-                dic.Add("id", "2");
-                dic.Add("name", "2");
-                dic.Add("des", "2");
-                talbe.content.Add(dic);
-                SQLiteHelper.CreateTable(talbe);
-                //关闭数据库
-                SQLiteHelper.CloseConnect();
             }
             catch (Exception e)
             {
